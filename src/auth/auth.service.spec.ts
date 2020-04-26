@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { secretOrKey } from './configuration/jwtConfiguration';
 import { UsersModule } from '../users/users.module';
-import { mongoDBTestImport } from '../../test/mongo-utils';
+import { mongoTestingImports, mongoTestingProviders } from '../test/mongo-utils';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -11,14 +11,14 @@ describe('AuthService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        mongoDBTestImport,
         JwtModule.register({
           secretOrPrivateKey: 'secretOrKey',
           signOptions: { expiresIn: 3600 },
         }),
         UsersModule,
+        ...mongoTestingImports,
       ],
-      providers: [AuthService],
+      providers: [AuthService, ...mongoTestingProviders],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
