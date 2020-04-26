@@ -3,11 +3,8 @@ import { Mongoose } from 'mongoose';
 import { UsersService } from './users.service';
 import { User } from './user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
-import { usersProviders } from './user.providers';
-import { TestDatabaseModule } from '../test/database/testDatabase.module';
-import { testDatabaseProviders } from '../test/database/testDatabase.providers';
 import { DATABASE_CONNECTION } from '../constants';
-import { dropAllCollections } from '../test/mongo-utils';
+import { dropAllCollections, mongoTestingImports, mongoTestingProviders } from '../test/mongo-utils';
 
 describe('UsersService', () => {
   let usersService: UsersService;
@@ -15,8 +12,8 @@ describe('UsersService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UsersService, ...usersProviders, ...testDatabaseProviders],
-      imports: [TestDatabaseModule],
+      providers: [UsersService, ...mongoTestingProviders],
+      imports: [...mongoTestingImports],
     }).compile();
 
     connection = module.get<Mongoose>(DATABASE_CONNECTION);
